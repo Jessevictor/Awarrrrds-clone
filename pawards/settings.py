@@ -20,7 +20,8 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'lv6xjzn1vhy2sdwmx0@bbm1p8g5!8fjasg#vo3--_p6_wjphf+'
+# SECRET_KEY = os.environ.get('SECRET_KEY')
+SECRET_KEY='lv6xjzn1vhy2sdwmx0@bbm1p8g5!8fjasg#vo3--_p6_wjphf+'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -37,6 +38,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'appawards.apps.AppawardsConfig',
+    'bootstrap4',
+    'bootstrap3',
+    'star_ratings',
+    'crispy_forms',
 ]
 
 MIDDLEWARE = [
@@ -75,9 +81,13 @@ WSGI_APPLICATION = 'pawards.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': "award",
+        'USER': "moringa",
+        'PASSWORD': "Access",
+        # 'HOST': os.environ.get('DB_HOST'),
+        # 'PORT': os.environ.get('DB_PORT', '5432'),
+    },
 }
 
 
@@ -105,7 +115,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Africa/Nairobi'
 
 USE_I18N = True
 
@@ -118,3 +128,15 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 STATIC_URL = '/static/'
+
+MEDIA_ROOT = os.path.join(BASE_DIR,'media')
+MEDIA_URL = '/media/'
+
+LOGOUT_REDIRECT_URL = '/registration/login'
+LOGIN_REDIRECT_URL = '/'
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
+#ratings
+STAR_RATINGS_RERATE = False
+STAR_RATINGS_RANGE = 5
+STAR_RATINGS_ANONYMOUS = False
