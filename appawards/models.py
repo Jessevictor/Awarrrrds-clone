@@ -1,11 +1,16 @@
 from django.db import models
 from django.contrib.auth.models import User
+from PIL import Image as Img
+from django.db.models.signals import post_save
+from django.dispatch import receiver 
+# import PIL
 
 class Image(models.Model):
-    image_name = models.CharField(max_length=30)
-    image = models.ImageField(upload_to = 'posts/')
-    image_caption = models.TextField()
-    image_poster = models.ForeignKey(User, on_delete=models.CASCADE, default = '', null = True)
+    title=models.CharField(default='', max_length=50)
+    user_name = models.CharField(default='',max_length=200)
+    image = models.ImageField(upload_to ='profile_pics')
+    project = models.TextField(default='',max_length=200)
+    link =models.URLField(default='', max_length=200)
 
 
 
@@ -23,19 +28,36 @@ class Image(models.Model):
 
     
     def __str__(self):
-        return self.image_name
+        return self.title
 
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    image =models.ImageField(default='default.jpg', upload_to='post')
+    image = models.ImageField(default='default.jpg', upload_to='profile_pics')
+    bio = models.CharField(default='', max_length=50)
 
     def __str__(self):
         return f'{self.user.username} Profile'
 
-    def save_prof(self):
-        self.save()
+    # def save(self):
+    #     super().save()
+    
+    def save(self, *args, **kwargs):
+        super(Profile, self).save(*args, **kwargs)
 
-    def delete_prof(self):
-        self.delete()
-# Create your models here.
+        img = Img                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  .open(self.image.path)
+
+        if img.height > 300 or img.width > 300:
+            output_size = (300, 300)
+            img.thumbnail(output_size)
+            img.save(self.image.path)
+
+
+@receiver(post_save, sender=User)
+def create_profile(sender, instance, created, **kwargs):
+    if created:
+        Profile.objects.create(user=instance)
+@receiver(post_save, sender=User)
+def save_profile(sender, instance, **kwargs):
+    instance.profile.save()
+
