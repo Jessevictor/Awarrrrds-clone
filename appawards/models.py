@@ -11,6 +11,7 @@ class Image(models.Model):
     image = models.ImageField(upload_to ='profile_pics')
     project = models.TextField(default='',max_length=200)
     link =models.URLField(default='', max_length=200)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
 
 
 
